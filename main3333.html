@@ -1,0 +1,200 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Stroop Test">
+<meta name="author" content="SitePoint">
+
+<title>Stroop Test</title>
+
+<style>
+
+#timer {
+  float: right;
+  height: 100px;
+  width: 200px;
+  background-color: #000;
+  margin: 30px 50px;
+  font-size: 60px !important;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 15px;
+  color: #49ff00;
+  font-family: clockFont;
+}
+
+@font-face {
+  font-family: clockFont;
+  src: url('digital-7/digital-7.ttf');
+}
+
+h1 {
+  color: blue;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 350px;
+  padding-top: 510px;
+  margin-left: 170px;
+  font-size: 200px;
+  display: none;
+}
+
+button {
+  height: 230px;
+  width: 400px;
+  text-align: center;
+  font-size: 100px;
+  margin: 350px 45%;
+  background-color: green;
+  color: #fff;
+}
+
+#bottom {
+  height: 100px;
+  border: 1px solid black;
+  display: inline-block;
+  margin-left: 45%;
+}
+
+.color_square {
+  height: 70px;
+  width: 70px;
+  margin: 15px 0px 15px 30px;
+}
+
+.color_square:last-child {
+  margin-right: 30px;
+}
+
+#score {
+  height: 230px;
+  width: 400px;
+  display: none;
+  text-align: center;
+  font-size: 100px;
+  padding-top: 400px;
+  margin: 0px 45% 350px 45%;
+}
+
+</style>
+
+</head>
+
+
+
+<body>
+  <div id='main'>
+    <div id='timer'>
+      <h2></h2>
+    </div>
+    <div id='center'>
+      <button>
+        START
+      </button>
+      <h1></h1>
+      <div id="score">
+      </div>
+    </div>
+    <div id="bottom">
+      <div id="color-container">
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  
+  var colors = ['red','blue','green','orange'];
+  var score = 0;
+
+
+  function formatTime(time) 
+  {
+
+    var mins = Math.floor(time/60),
+        seconds = time - (60 * mins);
+
+
+    return mins.toString() + ':' + (seconds < 10 ? '0' + seconds.toString() : seconds.toString());
+  }
+
+
+  function doTimer(time)
+  {
+    var currentTime = time;
+    var timer = setInterval(() => {
+      //console.log(currentTime);
+      if (currentTime == 0)
+      {
+        $('#timer h2').text(formatTime(currentTime));
+        clearInterval(timer);
+        clearInterval(timer2);
+        $('#score').html('<p>Your score: '+score+'</p>');
+        $('h1').hide();
+        $('#score').show();
+      }
+      else
+      {
+        currentTime--;
+        $('#timer h2').text(formatTime(currentTime));
+      }
+    }, 1000);
+    
+    var timer2 = setInterval(() => {
+      
+      var rand1 = Math.floor(Math.random() * 4);
+      var rand2 = Math.floor(Math.random() * 4);
+      var word = colors[rand1];
+      var color = colors[rand2];
+      
+      $('h1').text(word);
+      $('h1').css('color', color);
+      
+    }, 2000);
+
+  }
+
+
+
+  $(document).ready(function(){
+
+    colors.forEach(function(value, index){
+      var $html = `<div class="color_square" style="display: inline-block; background-color: ${value};"></div>`;
+      $('#bottom').append($html);
+    });
+
+    $('button').mouseover(function(){
+      $(this).css('background-color', 'blue');
+    });
+
+    $('button').mouseout(function(){
+      $(this).css('background-color', 'green');
+    })
+
+    $('button').click(function(){
+      $(this).hide();
+      $('h1').show();
+      doTimer(5);
+    });
+
+    $('.color_square').click(function(){
+      var color = $(this).css('background-color');
+      var wordColor =$('h1').css('color');
+
+      if (color == wordColor) 
+      {
+        score++;
+      }
+
+    })
+
+  });
+
+</script>
+
+</html>
